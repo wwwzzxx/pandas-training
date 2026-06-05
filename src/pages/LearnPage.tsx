@@ -6,7 +6,7 @@ import { CodeEditor } from '@/components/CodeEditor';
 import { OutputPanel } from '@/components/OutputPanel';
 import { usePyodide } from '@/hooks/usePyodide';
 import { useProgressStore } from '@/store/progressStore';
-import { ArrowRight, ArrowLeft, CheckCircle, ChevronRight, Loader2, AlertTriangle, Lightbulb, Home } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle, ChevronRight, Loader2, AlertTriangle, Lightbulb, Home, Play } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export function LearnPage() {
@@ -16,7 +16,7 @@ export function LearnPage() {
   const currentStepId = parseInt(step || '1', 10);
   const project = getProjectById(projectId);
   const dataset = getDataset(project?.dataset || '');
-  const { loading, ready, error, runCode, loadDataset } = usePyodide();
+  const { loading, ready, error, runCode, loadDataset, initPyodide, progress: pyodideProgress, status } = usePyodide(true);
   const { getProgress, completeStep } = useProgressStore();
   const progress = getProgress(projectId);
   const [code, setCode] = useState('');
@@ -25,6 +25,7 @@ export function LearnPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [runSuccess, setRunSuccess] = useState(false);
   const [showHints, setShowHints] = useState(false);
+  const [hasStartedLoading, setHasStartedLoading] = useState(false);
 
   const currentStep = project?.steps.find(s => s.id === currentStepId);
   const stepIndex = project?.steps.findIndex(s => s.id === currentStepId) ?? 0;
@@ -43,8 +44,15 @@ export function LearnPage() {
   }, [currentStep, currentStepId]);
 
   useEffect(() => {
-    if (ready && dataset) loadDataset(project?.dataset || '', dataset.sampleData);
-  }, [ready, dataset, project?.dataset, loadDataset]);
+    if (ready && dataset && hasStartedLoading) loadDataset(project?.dataset || '', dataset.sampleData);
+  }, [ready, dataset, project?.dataset, loadDataset, hasStartedLoading]);
+
+  const handleStartLoading = () => {
+    if (!hasStartedLoading) {
+      setHasStartedLoading(true);
+      initPyodide();
+    }
+  };
 
   if (!project || !currentStep) {
     return (
@@ -58,7 +66,10 @@ export function LearnPage() {
   }
 
   const handleRun = async () => {
-    if (!ready) return;
+    if (!ready) {
+      handleStartLoading();
+      return;
+    }
     setIsRunning(true);
     setOutput('');
     setRunError('');
@@ -85,7 +96,7 @@ export function LearnPage() {
     if (!isFirstStep) navigate(`/learn/${projectId}/${project.steps[stepIndex - 1].id}`);
   };
 
-  const completedSteps = progress?.completedSteps?.length || 0;
+  const completedSteps = progress?.completedSteps?.length ?? 0;
   const totalSteps = project.steps.length;
 
   return (
@@ -148,11 +159,39 @@ export function LearnPage() {
         </div>
 
         <div className="lg:w-2/3 flex flex-col p-4 gap-4">
-          {!ready ? (
+          {!hasStartedLoading ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                {loading && <><Loader2 className="w-12 h-12 text-indigo-500 animate-spin mx-auto mb-4" /><p className="text-gray-600">正在初始化 Python 环境...</p></>}
-                {error && <><AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" /><p className="text-gray-600">环境初始化失败</p><p className="text-sm text-red-500 mt-2">{error}</p></>}
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Play className="w-10 h-10 text-indigo-600 ml-1" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">准备开始学习</h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  点击下方按钮开始加载 Python 环境。首次加载可能需要几十秒，请耐心等待。
+                </p>
+                <button onClick={handleStartLoading} className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg font-medium hover:from-indigo-600 hover:to-purple-600 transition-all">
+                  开始加载环境
+                </button>
+              </div>
+            </div>
+          ) : !ready ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-20 h-20 relative mx-auto mb-6">
+                  <Loader2 className="w-12 h-12 text-indigo-500 animate-spin absolute top-4 left-4" />
+                  <svg className="w-full h-full" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="16" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+                    <circle cx="18" cy="18" r="16" fill="none" stroke="#6366f1" strokeWidth="3" strokeDasharray={`${pyodideProgress * 1.0053} 100.53`} strokeLinecap="round" transform="rotate(-90 18 18)" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{status}</h3>
+                <p className="text-gray-500">{pyodideProgress}% 完成</p>
+                {error && (
+                  <>
+                    <AlertTriangle className="w-12 h-12 text-red-500 mx-auto my-4" />
+                    <p className="text-sm text-red-500">{error}</p>
+                  </>
+                )}
               </div>
             </div>
           ) : (
