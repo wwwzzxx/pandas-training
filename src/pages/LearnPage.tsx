@@ -16,7 +16,7 @@ export function LearnPage() {
   const currentStepId = parseInt(step || '1', 10);
   const project = getProjectById(projectId);
   const dataset = getDataset(project?.dataset || '');
-  const { loading, ready, error, runCode, loadDataset, initPyodide, progress: pyodideProgress, status } = usePyodide(true);
+  const { ready, error, runCode, loadDataset, initPyodide, progress: pyodideProgress, status } = usePyodide(true);
   const { getProgress, completeStep } = useProgressStore();
   const progress = getProgress(projectId);
   const [code, setCode] = useState('');

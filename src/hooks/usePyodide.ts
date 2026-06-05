@@ -70,11 +70,12 @@ export function usePyodide(lazyLoad?: boolean) {
         setState(prev => ({ ...prev, status: '加载完成', progress: 100 }));
         return pyodideInstance;
       } catch (err) {
-        if (i === PYODIDE_URLS.length - 1) throw err;
-        window.loadPyodide = undefined;
-        const scripts = document.querySelectorAll('script[src*="pyodide.js"]');
-        scripts.forEach(script => script.remove());
-      }
+      if (i === PYODIDE_URLS.length - 1) throw err;
+      // @ts-ignore - Clear script for next attempt
+      window.loadPyodide = undefined;
+      const scripts = document.querySelectorAll('script[src*="pyodide.js"]');
+      scripts.forEach(script => script.remove());
+    }
     }
     throw new Error('Failed to load Pyodide from all URLs');
   }, []);
