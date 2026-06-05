@@ -8,4 +8,23 @@ export default defineConfig({
     react(),
     tsconfigPaths()
   ],
+  build: {
+    target: 'es2020',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': ['lucide-react', 'clsx'],
+          'code-editor': ['@uiw/react-codemirror', '@codemirror/lang-python'],
+        },
+      },
+    },
+  },
 })

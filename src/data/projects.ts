@@ -57,13 +57,44 @@ print("删除后数据行数:", len(df))`,
         id: 1,
         title: '基础分组聚合',
         instruction: '让我们按产品类别分组，计算每个类别的订单数量和总金额。',
-        initialCode: `category_stats = df.groupby('category').agg({
+        initialCode: `import pandas as pd
+
+df = pd.read_csv('retail_orders.csv')
+category_stats = df.groupby('category').agg({
     'order_id': 'count',
     'order_amount': 'sum',
 }).rename(columns={'order_id': '订单数量', 'order_amount': '总金额'})
 print("各产品类别统计:")
 print(category_stats)`,
         hints: ['groupby() 创建分组对象', 'agg() 可以同时应用多个聚合函数'],
+      },
+      {
+        id: 2,
+        title: '多级分组',
+        instruction: '让我们按产品类别和月份进行多级分组分析。',
+        initialCode: `df['order_date'] = pd.to_datetime(df['order_date'])
+df['month'] = df['order_date'].dt.to_period('M')
+
+monthly_stats = df.groupby(['category', 'month']).agg({
+    'order_amount': 'sum',
+}).rename(columns={'order_amount': '月销售额'})
+print("月度类别统计:")
+print(monthly_stats)`,
+        hints: ['groupby() 可以传入多个列名', 'dt.to_period() 转换为期间'],
+      },
+      {
+        id: 3,
+        title: '自定义聚合',
+        instruction: '让我们使用自定义聚合函数来分析数据。',
+        initialCode: `def range_agg(x):
+    return x.max() - x.min()
+
+stats = df.groupby('category').agg({
+    'order_amount': ['mean', 'min', 'max', range_agg],
+})
+print("类别销售额统计:")
+print(stats)`,
+        hints: ['可以传入自定义函数', '列表形式指定多个聚合方法'],
       },
     ],
   },
@@ -81,12 +112,46 @@ print(category_stats)`,
         id: 1,
         title: '加载购物篮数据',
         instruction: '购物篮数据记录了每笔交易中购买的商品。',
-        initialCode: `df = pd.read_csv('market_basket.csv')
+        initialCode: `import pandas as pd
+
+df = pd.read_csv('market_basket.csv')
 print("数据前10行:")
 print(df.head(10))
 print(f"\\n总交易数: {df['transaction_id'].nunique()}")
 print(f"商品种类: {df['product'].nunique()}")`,
         hints: ['nunique() 计算唯一值数量', 'unique() 返回所有唯一值'],
+      },
+      {
+        id: 2,
+        title: '热门商品统计',
+        instruction: '让我们统计最常购买的商品。',
+        initialCode: `product_counts = df['product'].value_counts().head(10)
+print("最受欢迎的商品:")
+print(product_counts)`,
+        hints: ['value_counts() 统计频率', 'head() 取前N条'],
+      },
+      {
+        id: 3,
+        title: '商品组合分析',
+        instruction: '让我们找出经常一起购买的商品组合。',
+        initialCode: `from itertools import combinations
+
+# 获取每笔交易的商品列表
+basket = df.groupby('transaction_id')['product'].apply(list)
+
+# 统计商品组合
+pair_counts = {}
+for items in basket:
+    if len(items) >= 2:
+        for pair in combinations(sorted(items), 2):
+            pair_counts[pair] = pair_counts.get(pair, 0) + 1
+
+# 排序显示
+sorted_pairs = sorted(pair_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+print("最常见的商品组合:")
+for pair, count in sorted_pairs:
+    print(f"{pair}: {count}次")`,
+        hints: ['combinations() 生成组合', 'sorted() 排序'],
       },
     ],
   },
