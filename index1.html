@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WZX - Python数据分析学习平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .skill-card.featured {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .skill-card.featured .skill-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .skill-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-card.featured h3 {
+            font-size: 22px;
+        }
+
+        .skill-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .interest-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .interest-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-card.featured {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">W</div>
+                <h1>WZX</h1>
+                <p class="subtitle">广东科学技术职业学院 | 商务数据分析与应用</p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🛠️ 专业技能</h2>
+                <div class="skills-grid">
+                    <div class="skill-card featured">
+                        <h3>🐍 Python数据分析</h3>
+                        <p class="skill-description">
+                            基于Browser的Python数据分析实操训练平台，支持代码编辑、数据可视化和AI辅助学习。
+                            涵盖pandas数据处理、matplotlib可视化、统计分析等核心技能。
+                        </p>
+                        <span class="badge">🔥 重点技能</span>
+                        <a href="https://wwwzzxx.github.io/python-data-analysis-platform/" target="_blank" class="btn">
+                            🚀 开始学习
+                        </a>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>📊 数据分析</h3>
+                        <p class="skill-description">
+                            熟练使用Excel、SQL进行数据处理和分析
+                        </p>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>📈 数据可视化</h3>
+                        <p class="skill-description">
+                            掌握Tableau、Power BI等工具进行数据可视化
+                        </p>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>💼 商务智能</h3>
+                        <p class="skill-description">
+                            了解企业级数据分析和决策支持系统
+                        </p>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>🔍 市场分析</h3>
+                        <p class="skill-description">
+                            具备市场调研和竞品分析能力
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💡 兴趣领域</h2>
+                <div class="interests-grid">
+                    <div class="interest-item">
+                        <div class="emoji">🚀</div>
+                        <div>大数据分析</div>
+                    </div>
+                    <div class="interest-item">
+                        <div class="emoji">🤖</div>
+                        <div>人工智能</div>
+                    </div>
+                    <div class="interest-item">
+                        <div class="emoji">📱</div>
+                        <div>数字营销</div>
+                    </div>
+                    <div class="interest-item">
+                        <div class="emoji">💡</div>
+                        <div>商业模式创新</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: white; margin-top: 20px;">
+            <p>© 2025 WZX | 基于 GitHub Pages 构建</p>
+        </div>
+    </div>
+</body>
+</html>
