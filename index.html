@@ -1,52 +1,403 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pandas 数据分析实战训练营</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WZX - Python数据分析学习平台</title>
+    <script type="module" src="app.js"></script>
     <style>
-      .loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      }
-      .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid rgba(255,255,255,0.3);
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      .loading-text {
-        color: white;
-        margin-top: 20px;
-        font-size: 18px;
-      }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .editor-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .editor-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 400px;
+        }
+        
+        .code-editor {
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .output-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-header {
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        #code-input {
+            flex: 1;
+            width: 100%;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border: none;
+            resize: none;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        
+        #code-input:focus {
+            outline: none;
+        }
+        
+        #output {
+            flex: 1;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .loading {
+            color: #667eea;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .success {
+            color: #4ecdc4;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .preview-canvas {
+            flex: 1;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+        
+        #plot-container {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="loading-screen" id="loading-screen">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">正在加载...</div>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🐍 WZX Python学习平台</h1>
+        <div class="nav-links">
+            <a href="#editor">代码编辑器</a>
+            <a href="#features">功能特点</a>
+            <a href="#about">关于我</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="hero">
+            <h2>基于浏览器的Python数据分析实操训练平台</h2>
+            <p>支持代码编辑、数据可视化和AI辅助学习</p>
+        </div>
+        
+        <div id="editor" class="editor-section">
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="tab active" data-tab="code">📝 代码编辑</button>
+                    <button class="tab" data-tab="output">📊 输出结果</button>
+                    <button class="tab" data-tab="plot">📈 可视化</button>
+                </div>
+                <div class="editor-actions">
+                    <button class="btn btn-secondary" id="clear-btn">清空</button>
+                    <button class="btn btn-secondary" id="example-btn">示例代码</button>
+                    <button class="btn btn-primary" id="run-btn">▶ 运行代码</button>
+                </div>
+            </div>
+            
+            <div class="editor-container">
+                <div class="code-editor">
+                    <div class="panel-header">Python 代码</div>
+                    <textarea id="code-input" spellcheck="false"># 欢迎使用WZX Python学习平台！
+# 在这里编写和运行Python代码
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 创建示例数据
+data = {
+    '月份': ['1月', '2月', '3月', '4月', '5月', '6月'],
+    '销售额': [120, 150, 180, 220, 190, 250],
+    '利润': [24, 30, 36, 44, 38, 50]
+}
+
+df = pd.DataFrame(data)
+print("数据预览:")
+print(df)
+print("\n统计信息:")
+print(df.describe())
+
+# 创建图表
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+ax1.bar(df['月份'], df['销售额'], color='#667eea')
+ax1.set_title('月度销售额')
+ax1.set_ylabel('销售额(万元)')
+
+ax2.plot(df['月份'], df['利润'], marker='o', color='#4ecdc4', linewidth=2)
+ax2.set_title('月度利润')
+ax2.set_ylabel('利润(万元)')
+
+plt.tight_layout()
+plt.savefig('plot.png')
+print("\n图表已生成！")</textarea>
+                </div>
+                
+                <div class="output-panel">
+                    <div class="panel-header">运行结果</div>
+                    <div id="output">点击"运行代码"按钮开始执行...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="features" class="features">
+            <div class="feature-card">
+                <h3>🐍 Python数据分析</h3>
+                <p>基于Pyodide在浏览器中运行Python，支持pandas数据处理、numpy数值计算等核心库。</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 数据可视化</h3>
+                <p>集成matplotlib库，支持绘制各种图表，数据可视化直观展示分析结果。</p>
+            </div>
+            <div class="feature-card">
+                <h3>💻 实时运行</h3>
+                <p>代码实时执行，无需安装Python环境，随时随地学习编程。</p>
+            </div>
+            <div class="feature-card">
+                <h3>📱 响应式设计</h3>
+                <p>完美适配各种设备，无论是桌面还是移动设备都能流畅使用。</p>
+            </div>
+        </div>
+        
+        <div id="about" class="editor-section" style="margin-top: 2rem;">
+            <div class="editor-header">
+                <h3>👨‍💻 关于我</h3>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="color: #667eea; margin-bottom: 1rem;">WZX</h2>
+                <p style="color: #666; line-height: 1.8;">
+                    广东科学技术职业学院 | 商务数据分析与应用专业<br><br>
+                    🛠️ <strong>专业技能：</strong><br>
+                    • Python数据分析 - 熟练使用pandas、numpy、matplotlib等库进行数据处理和可视化<br>
+                    • Excel高级应用 - 精通数据透视表、VLOOKUP、数据建模<br>
+                    • SQL数据库 - 熟练编写复杂查询语句<br>
+                    • Tableau/Power BI - 企业级数据可视化工具<br><br>
+                    💡 <strong>兴趣领域：</strong><br>
+                    • 大数据分析 • 人工智能 • 数字营销 • 商业模式创新
+                </p>
+            </div>
+        </div>
     </div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    
+    <div class="footer">
+        <p>© 2025 WZX | 基于 GitHub Pages 构建</p>
+    </div>
+</body>
 </html>
